@@ -24,9 +24,10 @@ public:
 
   // to create columns for Ntuple
   std::vector<G4int>&    GetHitTID()  { return htrid; }
+  std::vector<G4int>&    GetHitIonZ() { return hZ; }
+  std::vector<G4int>&    GetHitIonA() { return hA; }
   std::vector<G4double>& GetHitEdep() { return edep; }
   std::vector<G4double>& GetHitTime() { return thit; }
-  std::vector<G4double>& GetHitWeight() { return whit; }
   std::vector<G4double>& GetHitxLoc() { return xloc; }
   std::vector<G4double>& GetHityLoc() { return yloc; }
   std::vector<G4double>& GetHitzLoc() { return zloc; }
@@ -88,9 +89,10 @@ private:
   G4int                 fHID    = -1;
 
   std::vector<G4int>    htrid;
+  std::vector<G4int>    hZ;
+  std::vector<G4int>    hA;
   std::vector<G4double> edep;
   std::vector<G4double> thit;
-  std::vector<G4double> whit;
   std::vector<G4double> xloc;
   std::vector<G4double> yloc;
   std::vector<G4double> zloc;

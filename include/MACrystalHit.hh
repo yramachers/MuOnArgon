@@ -25,22 +25,25 @@ class MACrystalHit : public G4VHit
 
     // Set methods
     void SetTID      (G4int   tid)      { fTid    = tid; };
+    void SetIonZ     (G4int   tz)       { fZ      = tz; };
+    void SetIonA     (G4int   ta)       { fA      = ta; };
     void SetTime     (G4double ti)      { fTime   = ti; };
-    void SetWeight   (G4double we)      { fWeight = we; };
     void SetEdep     (G4double de)      { fEdep   = de; };
     void SetPos      (G4ThreeVector xyz){ fPos    = xyz; };
 
     // Get methods
     G4int    GetTID()  const     { return fTid; };
+    G4int    GetIonZ()  const    { return fZ; };
+    G4int    GetIonA()  const    { return fA; };
     G4double GetTime() const     { return fTime; };
-    G4double GetWeight() const   { return fWeight; };
     G4double GetEdep() const     { return fEdep; };
     G4ThreeVector GetPos() const { return fPos; };
 
   private:
       G4int         fTid = 0;
+      G4int         fZ   = 0;
+      G4int         fA   = 0;
       G4double      fTime = 0.0 ;
-      G4double      fWeight = 0.0;
       G4double      fEdep = 0.0;
       G4ThreeVector fPos = G4ThreeVector{};
 };
