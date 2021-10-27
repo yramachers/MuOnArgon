@@ -14,9 +14,6 @@
 #  include "G4RunManager.hh"
 #endif
 
-#include "G4UIExecutive.hh"
-#include "G4VisExecutive.hh"
-
 #include "G4NeutronTrackingCut.hh"
 #include "G4Threading.hh"
 #include "G4UImanager.hh"
@@ -43,13 +40,11 @@ int main(int argc, char** argv)
   CLI11_PARSE(app, argc, argv);
 
   // GEANT4 code
-  // If we're in interactive mode (no macroName), create a UIexecutive
-  // Constructing it here ensures all G4cout/cerr is delivered to it, so in GUI
-  // modes we don't get a mix of terminal/GUI info
-  G4UIExecutive* ui = nullptr;
+  // Don't accept interactive mode (no macroName).
   if(macroName.empty())
   {
-    ui = new G4UIExecutive(argc, argv);
+    G4cout << "No interactive mode running of example: provide a macro!" << G4endl;
+    return 1;
   }
 
   // -- Construct the run manager : MT or sequential one
@@ -80,7 +75,7 @@ int main(int argc, char** argv)
   // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);
   neutronCut->SetTimeLimit(2.0 * CLHEP::ms);  // 2 milli sec limit
-  physicsList->RegisterPhysics(neutronCut);   // like in Gerda paper
+  physicsList->RegisterPhysics(neutronCut);
 
   // finish physics list
   runManager->SetUserInitialization(physicsList);
@@ -89,34 +84,13 @@ int main(int argc, char** argv)
   auto* actions = new MAActionInitialization(detector, outputFileName);
   runManager->SetUserInitialization(actions);
 
-  // Initialize G4 kernel
-  //
-  // runManager->Initialize();
-
-  // Visualization manager
-  //
-  // auto visManager = std::make_unique<G4VisExecutive>();
-  // visManager->Initialize();
-
   // Get the pointer to the User Interface manager
   //
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-  if(ui != nullptr)  // Define UI session for interactive mode
-  {
-    auto visManager = std::make_unique<G4VisExecutive>();
-    visManager->Initialize();
+  G4String command = "/control/execute ";
+  UImanager->ApplyCommand(command + macroName);
 
-    UImanager->ApplyCommand("/control/execute vis.mac");
-    ui->SessionStart();
-    // UI must be deleted *before* the vis manager
-    delete ui;
-  }
-  else  // Batch mode
-  {
-    G4String command = "/control/execute ";
-    UImanager->ApplyCommand(command + macroName);
-  }
-
+  delete runManager;
   return 0;
 }

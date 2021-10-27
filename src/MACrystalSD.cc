@@ -49,7 +49,7 @@ G4bool MACrystalSD::ProcessHits(G4Step* aStep,
   // only Ion production of interest
   if (!aStep->GetTrack()->GetDefinition()->IsGeneralIon()) return false;
 
-  // particle filter on Ge-77
+  // particle info on Ions
   auto iZ = aStep->GetTrack()->GetDefinition()->GetAtomicNumber();
   auto iA = aStep->GetTrack()->GetDefinition()->GetAtomicMass();
 

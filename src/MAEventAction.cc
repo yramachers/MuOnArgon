@@ -75,7 +75,9 @@ void MAEventAction::BeginOfEventAction(const G4Event*
   edep.clear();
   htrid.clear();
   thit.clear();
-  whit.clear();
+  hZ.clear();
+  hA.clear();
+  edep.clear();
   xloc.clear();
   yloc.clear();
   zloc.clear();
@@ -120,7 +122,8 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
     auto hh = (*CrysHC)[i];
 
     htrid.push_back(hh->GetTID());
-    whit.push_back(hh->GetWeight());
+    hZ.push_back(hh->GetIonZ());
+    hA.push_back(hh->GetIonA());
     thit.push_back(hh->GetTime()  / G4Analysis::GetUnitValue("ns"));
     edep.push_back(hh->GetEdep()  / G4Analysis::GetUnitValue("MeV"));
     xloc.push_back((hh->GetPos()).x() / G4Analysis::GetUnitValue("m"));

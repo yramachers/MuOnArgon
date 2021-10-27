@@ -23,9 +23,10 @@ MARunAction::MARunAction(MAEventAction* eventAction, G4String name)
   //
   analysisManager->CreateNtuple("Score", "Hits");
   analysisManager->CreateNtupleIColumn("HitID", fEventAction->GetHitTID());
+  analysisManager->CreateNtupleIColumn("IonZ", fEventAction->GetHitIonZ());
+  analysisManager->CreateNtupleIColumn("IonA", fEventAction->GetHitIonA());
   analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetHitEdep());
   analysisManager->CreateNtupleDColumn("Time", fEventAction->GetHitTime());
-  analysisManager->CreateNtupleDColumn("Weight", fEventAction->GetHitWeight());
   analysisManager->CreateNtupleDColumn("Hitxloc", fEventAction->GetHitxLoc());
   analysisManager->CreateNtupleDColumn("Hityloc", fEventAction->GetHityLoc());
   analysisManager->CreateNtupleDColumn("Hitzloc", fEventAction->GetHitzLoc());
