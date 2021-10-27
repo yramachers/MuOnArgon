@@ -2,7 +2,6 @@
 #define MADetectorConstruction_h 1
 
 #include "G4Cache.hh"
-#include "G4GenericMessenger.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
 
@@ -21,18 +20,14 @@ public:
 
   G4double GetWorldSizeZ() { return fvertexZ; }  // inline
   G4double GetWorldExtent() { return fmaxrad; }  // --"--
-  void     ExportGeometry(const G4String& file);
 
 private:
-  void DefineCommands();
   void DefineMaterials();
 
-  G4VPhysicalVolume* SetupBaseline();
+  G4VPhysicalVolume* SetupCryostat();
 
-  G4GenericMessenger*                 fDetectorMessenger = nullptr;
   G4double                            fvertexZ           = -1.0;
   G4double                            fmaxrad            = -1.0;
-  G4String                            fGeometryName      = "baseline";
   G4Cache<MACrystalSD*>               fSD                = nullptr;
 };
 

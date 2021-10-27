@@ -41,21 +41,24 @@ void MACrystalSD::Initialize(G4HCofThisEvent* hce)
 G4bool MACrystalSD::ProcessHits(G4Step* aStep, 
                                      G4TouchableHistory*)
 {  
-  // energy deposit
+  // energy deposit required
   G4double edep = aStep->GetTotalEnergyDeposit();
 
   if (edep==0.) return false;
 
+  // only Ion production of interest
+  if (!aStep->GetTrack()->GetDefinition()->IsGeneralIon()) return false;
+
   // particle filter on Ge-77
   auto iZ = aStep->GetTrack()->GetDefinition()->GetAtomicNumber();
   auto iA = aStep->GetTrack()->GetDefinition()->GetAtomicMass();
-  if (!(iZ == 32 && iA == 77)) return false;
 
   MACrystalHit* newHit = new MACrystalHit();
 
   newHit->SetTID(aStep->GetTrack()->GetTrackID());
+  newHit->SetIonZ(iZ);
+  newHit->SetIonA(iA);
   newHit->SetTime(aStep->GetTrack()->GetGlobalTime());
-  newHit->SetWeight(aStep->GetTrack()->GetWeight());
   newHit->SetEdep(edep);
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
 
