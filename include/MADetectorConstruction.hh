@@ -6,7 +6,7 @@
 #include "globals.hh"
 
 class G4VPhysicalVolume;
-class MACrystalSD;
+class MALiquidSD;
 
 class MADetectorConstruction : public G4VUserDetectorConstruction
 {

@@ -1,20 +1,20 @@
-#ifndef MACrystalHit_h
-#define MACrystalHit_h 1
+#ifndef MALiquidHit_h
+#define MALiquidHit_h 1
 
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
 
-/// Crystal hit class
+/// Liquid hit class
 ///
 /// It defines data members to store the energy deposit,
 /// and position in a selected volume:
 
-class MACrystalHit : public G4VHit
+class MALiquidHit : public G4VHit
 {
   public:
-    G4bool operator==(const MACrystalHit&) const;
+    G4bool operator==(const MALiquidHit&) const;
 
     inline void* operator new(size_t);
     inline void  operator delete(void*);
@@ -50,24 +50,24 @@ class MACrystalHit : public G4VHit
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-typedef G4THitsCollection<MACrystalHit> MACrystalHitsCollection;
+typedef G4THitsCollection<MALiquidHit> MALiquidHitsCollection;
 
-extern G4ThreadLocal G4Allocator<MACrystalHit>* MACrystalHitAllocator;
+extern G4ThreadLocal G4Allocator<MALiquidHit>* MALiquidHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void* MACrystalHit::operator new(size_t)
+inline void* MALiquidHit::operator new(size_t)
 {
-  if(!MACrystalHitAllocator)
-      MACrystalHitAllocator = new G4Allocator<MACrystalHit>;
-  return (void *) MACrystalHitAllocator->MallocSingle();
+  if(!MALiquidHitAllocator)
+      MALiquidHitAllocator = new G4Allocator<MALiquidHit>;
+  return (void *) MALqiuidHitAllocator->MallocSingle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void MACrystalHit::operator delete(void *hit)
+inline void MALiquidHit::operator delete(void *hit)
 {
-  MACrystalHitAllocator->FreeSingle((MACrystalHit*) hit);
+  MALiquidHitAllocator->FreeSingle((MALiquidHit*) hit);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

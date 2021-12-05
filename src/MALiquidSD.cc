@@ -1,4 +1,4 @@
-#include "MACrystalSD.hh"
+#include "MALiquidSD.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -7,7 +7,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-MACrystalSD::MACrystalSD(const G4String& name,
+MALiquidSD::MALiquidSD(const G4String& name,
                          const G4String& hitsCollectionName) 
  : G4VSensitiveDetector(name),
    fHitsCollection(NULL)
@@ -17,17 +17,17 @@ MACrystalSD::MACrystalSD(const G4String& name,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-MACrystalSD::~MACrystalSD() 
+MALiquidSD::~MALiquidSD() 
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void MACrystalSD::Initialize(G4HCofThisEvent* hce)
+void MALiquidSD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
 
   fHitsCollection 
-    = new MACrystalHitsCollection(SensitiveDetectorName, collectionName[0]); 
+    = new MALiquidHitsCollection(SensitiveDetectorName, collectionName[0]); 
 
   // Add this collection in hce
 
@@ -38,7 +38,7 @@ void MACrystalSD::Initialize(G4HCofThisEvent* hce)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool MACrystalSD::ProcessHits(G4Step* aStep, 
+G4bool MALiquidSD::ProcessHits(G4Step* aStep, 
                                      G4TouchableHistory*)
 {  
   // energy deposit required
@@ -53,7 +53,7 @@ G4bool MACrystalSD::ProcessHits(G4Step* aStep,
   auto iZ = aStep->GetTrack()->GetDefinition()->GetAtomicNumber();
   auto iA = aStep->GetTrack()->GetDefinition()->GetAtomicMass();
 
-  MACrystalHit* newHit = new MACrystalHit();
+  MALiquidHit* newHit = new MALiquidHit();
 
   newHit->SetTID(aStep->GetTrack()->GetTrackID());
   newHit->SetIonZ(iZ);
@@ -67,12 +67,12 @@ G4bool MACrystalSD::ProcessHits(G4Step* aStep,
   return true;
 }
 
-void MACrystalSD::EndOfEvent(G4HCofThisEvent*)
+void MALiquidSD::EndOfEvent(G4HCofThisEvent*)
 {
   if ( verboseLevel>1 ) { 
      G4int nofHits = fHitsCollection->entries();
      G4cout << G4endl
             << "-------->Hits Collection: in this event they are " << nofHits 
-            << " hits in the crystal: " << G4endl;
+            << " hits in the liquid: " << G4endl;
   }
 }

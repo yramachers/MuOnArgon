@@ -3,7 +3,6 @@
 #include <cmath>
 
 #include "G4Box.hh"
-#include "G4Cons.hh"
 #include "G4Tubs.hh"
 #include "G4Polyhedra.hh"
 #include "G4LogicalVolume.hh"
@@ -16,7 +15,7 @@
 #include "G4VisAttributes.hh"
 
 #include "G4SDManager.hh"
-#include "MACrystalSD.hh"
+#include "MALiquidSD.hh"
 
 #include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
@@ -89,10 +88,10 @@ void MADetectorConstruction::ConstructSDandField()
   // Only need to construct the (per-thread) SD once
   if(!fSD.Get())
   {
-    G4String crystalSDname  = "CrystalSD";
-    MACrystalSD* aCrystalSD = new MACrystalSD(crystalSDname,
-                                                  "CrystalHitsCollection");
-    fSD.Put(aCrystalSD);
+    G4String liquidSDname  = "LiquidSD";
+    MALiquidSD* aliquidSD = new MALiquidSD(liquidSDname,
+                                                 "LiquidHitsCollection");
+    fSD.Put(aliquidSD);
 
     // Also only add it once to the SD manager!
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
@@ -123,45 +122,40 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
 
   // size parameter, unit [cm]
   // cavern
-  G4double stone     = 100.0;  // Hall wall thickness 1 m
-  G4double hallhside = 850.0;  // Hall cube side 17 m
+  G4double stone       = 100.0;  // Hall wall thickness 1 m
+  G4double hallrad     = 800.0;  // Hall diameter 16 m
+  G4double hallhheight = 650.0;  // Hall height 13 m
   // cryostat
-  G4double tankhside  = 650;   // cryostat cube side 13 m
+  G4double tankhside  = 570.5; // cryostat cube side 11.41 m
   G4double outerwall  = 1.2;   // outer SS wall thickness
-  G4double insulation = 80.0;  // polyurethane foam
+  G4double insulation = 62.0;  // polyurethane foam
   G4double innerwall  = 0.12;  // inner SS membrane
-  // copper tubes with Germanium ROI
-  G4double copper    = 0.35;    // tube thickness 3.5 mm
-  G4double curad     = 40.0;    // copper tube diam 80 cm
-  G4double cuhheight = 334.34;  // copper tube height 7 m inside cryostat
-  G4double cushift   = 234.34;  // shift cu tube inside cryostat to top
-  G4double ringrad   = 100.0;   // cu tube placement ring radius
-  // Ge cylinder for 250 kg at 5.32 g/cm3
-  G4double roiradius     = 30.0;   // string radius curad - Ge radius - gap
-
-  G4double gerad          = 4.0;                      // Ge radius
-  G4double gehheight      = 5.0;                      // full height 10 cm
-  G4double gegap          = 3.0;                      // gap between Ge 3cm
-  G4double layerthickness = gegap + 2 * gehheight;    // 13 cm total
-  G4int    nofLayers      = 8;   // 8 Ge + 7 gaps = 1010 mm string height
-  G4int    nofStrings     = 12;  // 12 strings  of 8 Ge each
+  // octagons, 2 planes in z
+  const G4double rInner[]  = {0.0*cm, 0.0*cm}; // full volume
+  const G4double rOutTPC[] = {177.5*cm, 177.5*cm};
+  const G4double rOutAc[]  = {182.5*cm, 182.5*cm}; // Acrylic 5cm
+  const G4double rOutIB[]  = {222.5*cm, 222.5*cm}; // Inner Buffer 40cm
+  const G4double rOutAc2[] = {232.5*cm, 232.5*cm}; // Acrylic+Gd 10cm
+  const G4double rOutOB[]  = {272.5*cm, 272.5*cm}; // Outer Buffer 40cm
+  const G4double rOutCu[]  = {272.6*cm, 272.6*cm}; // Copper 1mm
 
   // total
   G4double offset =
-    hallhside - tankhside;  // shift cavern floor to keep detector centre at origin
-  G4double worldside = hallhside + stone + offset + 0.1;  // larger than rest
+    hallhheight - tankhside;  // shift cavern floor to keep detector centre at origin
+  G4double worldside = hallrad + stone + offset + 0.1;  // larger than rest
   G4double larside =
     tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
   fvertexZ = (worldside - stone - 0.1) * cm;  // max vertex height
-  fmaxrad  = hallhside * cm;                   // max vertex circle radius
+  fmaxrad  = (hallrad + stone) * cm;          // max vertex circle radius
 
   // Volumes for this geometry
 
   //
   // World
   //
-  auto* worldSolid     = new G4Box("World", worldside * cm, worldside * cm, worldside * cm);
+  auto* worldSolid     = new G4Tubs("World", 0.0 * cm, worldside * cm, 
+                                (hallhheight + stone + offset + 0.1) * cm, 0.0, CLHEP::twopi);
   auto* fWorldLogical  = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
   auto* fWorldPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWorldLogical,
                                            "World_phys", nullptr, false, 0);
@@ -169,8 +163,8 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   //
   // Cavern
   //
-  auto* cavernSolid    = new G4Box("Cavern", (hallhside + stone) * cm,
-                                (hallhside + stone) * cm, (hallhside + stone) * cm);
+  auto* cavernSolid    = new G4Tubs("Cavern", 0.0 * cm, (hallrad + stone) * cm, 
+                                (hallhheight + stone) * cm, 0.0, CLHEP::twopi);
   auto* fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
   auto* fCavernPhysical =
     new G4PVPlacement(nullptr, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
@@ -179,7 +173,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   //
   // Hall
   //
-  auto* hallSolid = new G4Box("Cavern", hallhside * cm, hallhside * cm, hallhside * cm);
+  auto* hallSolid = new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
   auto* fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
   auto* fHallPhysical =
     new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
@@ -215,7 +209,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
                       fPuLogical, false, 0, true);
 
   //
-  // LAr
+  // LAr filling box
   //
   auto* larSolid     = new G4Box("LAr", larside * cm, larside * cm, larside * cm);
   auto* fLarLogical  = new G4LogicalVolume(larSolid, larMat, "Lar_log");
@@ -223,95 +217,15 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
                                          "Lar_phys", fMembraneLogical, false, 0, true);
 
   //
-  // copper tubes, hollow cylinder shell
+  // copper Faraday cage
   //
-  auto* copperSolid = new G4Tubs("Copper", (curad - copper) * cm, curad * cm,
-                                 cuhheight * cm, 0.0, CLHEP::twopi);
-
-  //
-  // ULAr bath, solid cylinder
-  //
-  auto* ularSolid = new G4Tubs("ULar", 0.0 * cm, (curad - copper) * cm, cuhheight * cm,
-                               0.0, CLHEP::twopi);
-
-  // tower; logical volumes
-  auto* fCopperLogical = new G4LogicalVolume(copperSolid, copperMat, "Copper_log");
-  auto* fUlarLogical   = new G4LogicalVolume(ularSolid, larMat, "ULar_log");
-
-  //
-  // Germanium, solid cylinder
-  //
-  // layers in tower
-  auto* layerSolid = new G4Tubs("LayerSolid", 0.0 * cm, gerad * cm,
-                                (gehheight + gegap / 2.0) * cm, 0.0, CLHEP::twopi);
-  
-  auto* fLayerLogical = new G4LogicalVolume(layerSolid, larMat, "Layer_log");
-                      
-  // fill one layer
-  auto* geSolid =
-    new G4Tubs("ROI", 0.0 * cm, gerad * cm, gehheight * cm, 0.0, CLHEP::twopi);
-    
-  auto* fGeLogical = new G4LogicalVolume(geSolid, roiMat, "Ge_log");
-  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, -gegap / 2.0 * cm), fGeLogical,   
-                    "Ge_phys", fLayerLogical, false, 0, true);
-  
-  auto* gapSolid =
-    new G4Tubs("Gap", 0.0 * cm, gerad * cm, gegap / 2.0 * cm, 0.0, CLHEP::twopi);
-  
-  auto* fGapLogical = new G4LogicalVolume(gapSolid, larMat, "Gap_log");
-  new G4PVPlacement(nullptr, G4ThreeVector(0.0, 0.0, gehheight * cm), fGapLogical,
-                    "Gap_phys", fLayerLogical, false, 0, true);
-  
-  // place layers as mother volume with unique copy number
-  G4double step = (gehheight + gegap / 2) * cm;
-  G4double xpos;
-  G4double ypos;
-  G4double angle = CLHEP::twopi / nofStrings;
-
-  // layer logical into ULarlogical
-  for(G4int j = 0; j < nofStrings; j++)
-  {
-    xpos = roiradius * cm * std::cos(j * angle);
-    ypos = roiradius * cm * std::sin(j * angle);
-    for(G4int i = 0; i < nofLayers; i++)
-    {
-      new G4PVPlacement(
-        nullptr,
-        G4ThreeVector(xpos, ypos,  
-                      - step + (nofLayers / 2 * layerthickness - i * layerthickness) * cm),
-        fLayerLogical, "Layer_phys", fUlarLogical, false, i + j * nofLayers, true);
-    }
-  }
+  G4int nSides  = 8;
+  G4int nPlanes = 2;
+  auto* copperSolid = new G4Polyhedra("Copper", 0.0, CLHEP::twopi, nSides, nPlanes,);
+  auto* fCuLogical  = new G4LogicalVolume(copperSolid, copperMat, "Cu_log");
 
 
   // placements
-  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm),
-                    fCopperLogical, "Copper_phys", fLarLogical, false, 0, true);
-
-  new G4PVPlacement(nullptr, G4ThreeVector(ringrad * cm, 0., cushift * cm), fUlarLogical,
-                    "ULar_phys", fLarLogical, false, 0, true);
-
-
-  // tower 2
-  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm),
-                    fCopperLogical, "Copper_phys2", fLarLogical, false, 1, true);
-
-  new G4PVPlacement(nullptr, G4ThreeVector(0., ringrad * cm, cushift * cm), fUlarLogical,
-                    "ULar_phys2", fLarLogical, false, 1, true);
-
-  // tower 3
-  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm),
-                    fCopperLogical, "Copper_phys3", fLarLogical, false, 2, true);
-
-  new G4PVPlacement(nullptr, G4ThreeVector(-ringrad * cm, 0., cushift * cm), fUlarLogical,
-                    "ULar_phys3", fLarLogical, false, 2, true);
-
-  // tower 4
-  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm),
-                    fCopperLogical, "Copper_phys4", fLarLogical, false, 3, true);
-
-  new G4PVPlacement(nullptr, G4ThreeVector(0., -ringrad * cm, cushift * cm), fUlarLogical,
-                    "ULar_phys4", fLarLogical, false, 3, true);
 
   //
   // Visualization attributes
@@ -333,10 +247,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   fPuLogical->SetVisAttributes(greyVisAtt);
   fMembraneLogical->SetVisAttributes(blueVisAtt);
   fLarLogical->SetVisAttributes(greyVisAtt);
-  fCopperLogical->SetVisAttributes(greenVisAtt);
-  fUlarLogical->SetVisAttributes(greyVisAtt);
-  fGeLogical->SetVisAttributes(redVisAtt);
+  fCuLogical->SetVisAttributes(greenVisAtt);
 
   return fWorldPhysical;
 }
-

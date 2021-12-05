@@ -5,7 +5,7 @@
 #include <numeric>
 #include <vector>
 
-#include "MACrystalHit.hh"
+#include "MALiquidHit.hh"
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
@@ -45,7 +45,7 @@ public:
 
 private:
   // methods
-  MACrystalHitsCollection*   GetHitsCollection(G4int hcID,
+  MALiquidHitsCollection*    GetHitsCollection(G4int hcID,
                                                const G4Event* event) const;
   G4int                      GeomID(G4String name);
   void                       makeMap();

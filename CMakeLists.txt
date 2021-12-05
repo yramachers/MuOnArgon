@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(CTest)
 
 # Dependencies
-find_package(Geant4 10.6 REQUIRED gdml ui_all vis_all)
+find_package(Geant4 10.7 REQUIRED gdml ui_all vis_all)
 
 # Build
 add_executable(muonargon
@@ -18,8 +18,8 @@ add_executable(muonargon
   src/MAActionInitialization.cc
   src/MABiasChangeCrossSection.cc
   src/MABiasMultiParticleChangeCrossSection.cc
-  src/MACrystalHit.cc
-  src/MACrystalSD.cc
+  src/MALiquidHit.cc
+  src/MALiquidSD.cc
   src/MADetectorConstruction.cc
   src/MAEventAction.cc
   src/MAPrimaryGeneratorAction.cc

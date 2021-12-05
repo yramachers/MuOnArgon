@@ -9,7 +9,7 @@
 #include "G4UnitsTable.hh"
 #include "G4ios.hh"
 
-#include "MACrystalSD.hh"
+#include "MALiquidSD.hh"
 
 #include "Randomize.hh"
 #include <algorithm>
@@ -17,11 +17,11 @@
 #include <numeric>
 #include <vector>
 
-MACrystalHitsCollection* MAEventAction::GetHitsCollection(G4int hcID,
+MALiquidHitsCollection* MAEventAction::GetHitsCollection(G4int hcID,
                                               const G4Event* event) const
 {
   auto hitsCollection 
-    = static_cast<MACrystalHitsCollection*>(
+    = static_cast<MALiquidHitsCollection*>(
         event->GetHCofThisEvent()->GetHC(hcID));
   
   if ( ! hitsCollection ) {
@@ -97,9 +97,9 @@ void MAEventAction::BeginOfEventAction(const G4Event*
 
 void MAEventAction::EndOfEventAction(const G4Event* event)
 {
-  // Get crystal hits collections IDs
+  // Get liquid hits collections IDs
   if(fHID < 0)
-    fHID   = G4SDManager::GetSDMpointer()->GetCollectionID("CrystalHitsCollection");
+    fHID   = G4SDManager::GetSDMpointer()->GetCollectionID("LiquidHitsCollection");
 
 
   // Get entries from hits collections
