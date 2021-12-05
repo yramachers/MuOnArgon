@@ -42,18 +42,15 @@ void MAEventAction::makeMap()
   lookup["Cavern_log"]   = 0;
   lookup["Hall_log"]     = 1;
   lookup["Tank_log"]     = 2;
-  lookup["Water_log"]    = 3;
-  lookup["Cout_log"]     = 4;
-  lookup["Cvac_log"]     = 5;
-  lookup["Cinn_log"]     = 6;
-  lookup["Lar_log"]      = 7;
-  lookup["Lid_log"]      = 8;
-  lookup["Bot_log"]      = 9;
-  lookup["Copper_log"]   = 10;
-  lookup["ULar_log"]     = 11;
-  lookup["Ge_log"]       = 12;
-  lookup["Pu_log"]       = 13;
-  lookup["Membrane_log"] = 14;
+  lookup["Pu_log"]       = 3;
+  lookup["Membrane_log"] = 4;
+  lookup["Lar_log"]      = 5;
+  lookup["Cu_log"]       = 6;
+  lookup["OB_log"]       = 7;
+  lookup["Ac2_log"]      = 8;
+  lookup["IB_log"]       = 9;
+  lookup["Ac_log"]       = 10;
+  lookup["TPC_log"]      = 11;
 }
 
 G4int MAEventAction::GeomID(G4String name)
