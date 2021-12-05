@@ -97,8 +97,8 @@ void MADetectorConstruction::ConstructSDandField()
     G4SDManager::GetSDMpointer()->AddNewDetector(fSD.Get());
 
     SetSensitiveDetector("TPC_log", fSD.Get());
-    SetSensitiveDetector("TIB_log", fSD.Get());
-    SetSensitiveDetector("TOB_log", fSD.Get());
+    SetSensitiveDetector("IB_log",  fSD.Get());
+    SetSensitiveDetector("OB_log",  fSD.Get());
 
   }
   else
@@ -138,6 +138,13 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   const G4double rOutAc2[] = {232.5*cm, 232.5*cm}; // Acrylic+Gd 10cm
   const G4double rOutOB[]  = {272.5*cm, 272.5*cm}; // Outer Buffer 40cm
   const G4double rOutCu[]  = {272.6*cm, 272.6*cm}; // Copper 1mm
+
+  const G4double zTPC[] = {-175.0*cm, 175.0*cm};
+  const G4double zAc[]  = {-180.0*cm, 180.0*cm};
+  const G4double zIB[]  = {-220.0*cm, 220.0*cm};
+  const G4double zAc2[] = {-230.0*cm, 230.0*cm};
+  const G4double zOB[]  = {-270.0*cm, 270.0*cm};
+  const G4double zCu[]  = {-270.1*cm, 270.1*cm};
 
   // total
   G4double offset =
@@ -219,13 +226,59 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   //
   // copper Faraday cage
   //
-  G4int nSides  = 8;
+  G4int nSides  = 8; // regular Octagon
   G4int nPlanes = 2;
-  auto* copperSolid = new G4Polyhedra("Copper", 0.0, CLHEP::twopi, nSides, nPlanes,);
+  auto* copperSolid = new G4Polyhedra("Copper", 0.0, CLHEP::twopi, nSides, nPlanes,
+                                      zCu, rInner, rOutCu);
   auto* fCuLogical  = new G4LogicalVolume(copperSolid, copperMat, "Cu_log");
+  auto* fCuPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fCuLogical,
+                                         "Cu_phys", fLarLogical, false, 0, true);
 
+  //
+  // LAr Outer buffer
+  //
+  auto* obSolid = new G4Polyhedra("OuterB", 0.0, CLHEP::twopi, nSides, nPlanes,  
+                                      zOB, rinner, rOutOB);
+  auto* fOBLogical  = new G4LogicalVolume(obSolid, larMat, "OB_log");  
+  auto* fOBPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fOBLogical,   
+                                         "OB_phys", fCuLogical, false, 0, true);
 
-  // placements
+  //
+  // Acrylic + Gd
+  //
+  auto* ac2Solid = new G4Polyhedra("PMMAGd", 0.0, CLHEP::twopi, nSides, nPlanes,
+                                      zAc2, rinner, rOutAc2);
+  auto* fAc2Logical  = new G4LogicalVolume(ac2Solid, pmmagdMat, "Ac2_log");
+  auto* fAc2Physical = new G4PVPlacement(nullptr, G4ThreeVector(), fAc2Logical,
+                                         "Ac2_phys", fOBLogical, false, 0, true);
+
+  //
+  // LAr Inner buffer
+  //
+  auto* ibSolid = new G4Polyhedra("InnerB", 0.0, CLHEP::twopi, nSides, nPlanes,
+                                      zIB, rinner, rOutIB);
+  auto* fIBLogical  = new G4LogicalVolume(obSolid, larMat, "IB_log");
+  auto* fIBPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fIBLogical,
+                                         "IB_phys", fAc2Logical, false, 0, true);
+
+  //
+  // Acrylic shell
+  //                                     
+  auto* acSolid = new G4Polyhedra("PMMA", 0.0, CLHEP::twopi, nSides, nPlanes,
+                                      zAc, rinner, rOutAc);
+  auto* fAcLogical  = new G4LogicalVolume(acSolid, pmmaMat, "Ac_log");
+  auto* fAcPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fAcLogical,
+                                         "Ac_phys", fIBLogical, false, 0, true);
+
+  //
+  // TPC
+  //
+  auto* tpcSolid = new G4Polyhedra("TPC", 0.0, CLHEP::twopi, nSides, nPlanes,
+                                      zTPC, rinner, rOutTPC);
+  auto* fTPCLogical  = new G4LogicalVolume(tpcSolid, larMat, "TPC_log");
+  auto* fTPCPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fTPCLogical,
+                                         "TPC_phys", fAcLogical, false, 0, true);
+                                         
 
   //
   // Visualization attributes
