@@ -16,8 +16,6 @@ find_package(Geant4 10.7 REQUIRED gdml ui_all vis_all)
 add_executable(muonargon
   muonargon.cc
   src/MAActionInitialization.cc
-  src/MABiasChangeCrossSection.cc
-  src/MABiasMultiParticleChangeCrossSection.cc
   src/MALiquidHit.cc
   src/MALiquidSD.cc
   src/MADetectorConstruction.cc

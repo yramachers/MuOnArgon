@@ -60,14 +60,14 @@ int main(int argc, char** argv)
 
 #else
 
-  auto runManager = std::make_unique<G4RunManager>();
+  auto* runManager = std::make_unique<G4RunManager>();
   G4cout << "      ********** Run Manager constructed in sequential mode ************ "
          << G4endl;
 
 #endif
 
   // -- Set mandatory initialization classes
-  auto* detector = new MADetectorConstruction;
+  auto detector = new MADetectorConstruction;
   runManager->SetUserInitialization(detector);
 
   // -- set user physics list
@@ -91,6 +91,6 @@ int main(int argc, char** argv)
   G4String command = "/control/execute ";
   UImanager->ApplyCommand(command + macroName);
 
-  delete runManager;
+  delete &runManager;
   return 0;
 }

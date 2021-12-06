@@ -12,7 +12,7 @@ class MADetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
   MADetectorConstruction();
-  ~<ADetectorConstruction();
+  ~MADetectorConstruction();
 
 public:
   virtual G4VPhysicalVolume* Construct();
@@ -28,7 +28,7 @@ private:
 
   G4double                            fvertexZ           = -1.0;
   G4double                            fmaxrad            = -1.0;
-  G4Cache<MACrystalSD*>               fSD                = nullptr;
+  G4Cache<MALiquidSD*>                fSD                = nullptr;
 };
 
 #endif

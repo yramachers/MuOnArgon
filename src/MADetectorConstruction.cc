@@ -238,7 +238,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // LAr Outer buffer
   //
   auto* obSolid = new G4Polyhedra("OuterB", 0.0, CLHEP::twopi, nSides, nPlanes,  
-                                      zOB, rinner, rOutOB);
+                                      zOB, rInner, rOutOB);
   auto* fOBLogical  = new G4LogicalVolume(obSolid, larMat, "OB_log");  
   auto* fOBPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fOBLogical,   
                                          "OB_phys", fCuLogical, false, 0, true);
@@ -247,7 +247,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // Acrylic + Gd
   //
   auto* ac2Solid = new G4Polyhedra("PMMAGd", 0.0, CLHEP::twopi, nSides, nPlanes,
-                                      zAc2, rinner, rOutAc2);
+                                      zAc2, rInner, rOutAc2);
   auto* fAc2Logical  = new G4LogicalVolume(ac2Solid, pmmagdMat, "Ac2_log");
   auto* fAc2Physical = new G4PVPlacement(nullptr, G4ThreeVector(), fAc2Logical,
                                          "Ac2_phys", fOBLogical, false, 0, true);
@@ -256,7 +256,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // LAr Inner buffer
   //
   auto* ibSolid = new G4Polyhedra("InnerB", 0.0, CLHEP::twopi, nSides, nPlanes,
-                                      zIB, rinner, rOutIB);
+                                      zIB, rInner, rOutIB);
   auto* fIBLogical  = new G4LogicalVolume(obSolid, larMat, "IB_log");
   auto* fIBPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fIBLogical,
                                          "IB_phys", fAc2Logical, false, 0, true);
@@ -265,7 +265,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // Acrylic shell
   //                                     
   auto* acSolid = new G4Polyhedra("PMMA", 0.0, CLHEP::twopi, nSides, nPlanes,
-                                      zAc, rinner, rOutAc);
+                                      zAc, rInner, rOutAc);
   auto* fAcLogical  = new G4LogicalVolume(acSolid, pmmaMat, "Ac_log");
   auto* fAcPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fAcLogical,
                                          "Ac_phys", fIBLogical, false, 0, true);
@@ -274,7 +274,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // TPC
   //
   auto* tpcSolid = new G4Polyhedra("TPC", 0.0, CLHEP::twopi, nSides, nPlanes,
-                                      zTPC, rinner, rOutTPC);
+                                      zTPC, rInner, rOutTPC);
   auto* fTPCLogical  = new G4LogicalVolume(tpcSolid, larMat, "TPC_log");
   auto* fTPCPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fTPCLogical,
                                          "TPC_phys", fAcLogical, false, 0, true);

@@ -10,7 +10,7 @@
 /run/initialize
 
 # lab depth [km.w.e.]
-/MOA/generator/depth 5.89
+/MA/generator/depth 5.89
 
 # start
 /run/beamOn 4

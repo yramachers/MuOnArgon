@@ -60,7 +60,7 @@ inline void* MALiquidHit::operator new(size_t)
 {
   if(!MALiquidHitAllocator)
       MALiquidHitAllocator = new G4Allocator<MALiquidHit>;
-  return (void *) MALqiuidHitAllocator->MallocSingle();
+  return (void *) MALiquidHitAllocator->MallocSingle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
