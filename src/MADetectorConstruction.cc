@@ -48,6 +48,7 @@ void MADetectorConstruction::DefineMaterials()
   auto* O  = new G4Element("Oxygen", "O", 8., 16.00 * g / mole);
   auto* Ca = new G4Element("Calcium", "Ca", 20., 40.08 * g / mole);
   auto* Mg = new G4Element("Magnesium", "Mg", 12., 24.31 * g / mole);
+  auto* Gd = new G4Element("Gadolinium", "Gd", 64., 157.25 * g / mole);
 
   // Standard Rock definition, similar to Gran Sasso rock
   // with density from PDG report
@@ -72,12 +73,11 @@ void MADetectorConstruction::DefineMaterials()
   pmma->AddElement(C, 5);
   pmma->AddElement(O, 2);
 
-  auto*    pmmagd  = new G4Material("PMMAGd", density, 3);
-  pmmagd->AddElement(H, 8);
-  pmmagd->AddElement(C, 5);
-  pmmagd->AddElement(O, 2);
-  auto* gadMat     = G4Material::GetMaterial("G4_Gd");
-  pmmagd->AddMaterial(gadMat, 1.0 * perCent);
+  auto*    pmmagd  = new G4Material("PMMAGd", density, 4);
+  pmmagd->AddElement(H, 53.0 * perCent);
+  pmmagd->AddElement(C, 33.0 * perCent);
+  pmmagd->AddElement(O, 13.0 * perCent);
+  pmmagd->AddElement(Gd, 1.0 * perCent);
 
 }
 
@@ -117,13 +117,13 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   auto* copperMat     = G4Material::GetMaterial("G4_Cu");
   auto* stdRock       = G4Material::GetMaterial("StdRock");
   auto* puMat         = G4Material::GetMaterial("polyurethane");
-  auto* pmmaMat       = G4Material::GetMaterial("pmma");
-  auto* pmmagdMat     = G4Material::GetMaterial("pmmagd");
+  auto* pmmaMat       = G4Material::GetMaterial("PMMA");
+  auto* pmmagdMat     = G4Material::GetMaterial("PMMAGd");
 
   // size parameter, unit [cm]
   // cavern
   G4double stone       = 100.0;  // Hall wall thickness 1 m
-  G4double hallrad     = 800.0;  // Hall diameter 16 m
+  G4double hallrad     = 900.0;  // Hall diameter 18 m
   G4double hallhheight = 650.0;  // Hall height 13 m
   // cryostat
   G4double tankhside  = 570.5; // cryostat cube side 11.41 m
@@ -149,7 +149,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   // total
   G4double offset =
     hallhheight - tankhside;  // shift cavern floor to keep detector centre at origin
-  G4double worldside = hallrad + stone + offset + 0.1;  // larger than rest
+  G4double worldside = hallhheight + stone + offset + 0.1;  // larger than rest
   G4double larside =
     tankhside - outerwall - insulation - innerwall;  // cube side of LAr volume
 
@@ -161,7 +161,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   //
   // World
   //
-  auto* worldSolid     = new G4Tubs("World", 0.0 * cm, worldside * cm, 
+  auto* worldSolid     = new G4Tubs("World", 0.0 * cm, (hallrad + stone + 0.1) * cm, 
                                 (hallhheight + stone + offset + 0.1) * cm, 0.0, CLHEP::twopi);
   auto* fWorldLogical  = new G4LogicalVolume(worldSolid, worldMaterial, "World_log");
   auto* fWorldPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fWorldLogical,
@@ -174,7 +174,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
                                 (hallhheight + stone) * cm, 0.0, CLHEP::twopi);
   auto* fCavernLogical = new G4LogicalVolume(cavernSolid, stdRock, "Cavern_log");
   auto* fCavernPhysical =
-    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., offset * cm), fCavernLogical,
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., 0.), fCavernLogical,
                       "Cavern_phys", fWorldLogical, false, 0);
 
   //
@@ -183,7 +183,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   auto* hallSolid = new G4Tubs("Hall", 0.0 * cm, hallrad * cm, hallhheight * cm, 0.0, CLHEP::twopi);
   auto* fHallLogical = new G4LogicalVolume(hallSolid, airMat, "Hall_log");
   auto* fHallPhysical =
-    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fHallLogical,
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., 0.), fHallLogical,
                       "Hall_phys", fCavernLogical, false, 0, true);
 
   //
@@ -192,7 +192,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   auto* tankSolid    = new G4Box("Tank", tankhside * cm, tankhside * cm, tankhside * cm);
   auto* fTankLogical = new G4LogicalVolume(tankSolid, steelMat, "Tank_log");
   auto* fTankPhysical =
-    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -stone * cm), fTankLogical,
+    new G4PVPlacement(nullptr, G4ThreeVector(0., 0., -offset * cm), fTankLogical,
                       "Tank_phys", fHallLogical, false, 0, true);
 
   //
@@ -257,7 +257,7 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   //
   auto* ibSolid = new G4Polyhedra("InnerB", 0.0, CLHEP::twopi, nSides, nPlanes,
                                       zIB, rInner, rOutIB);
-  auto* fIBLogical  = new G4LogicalVolume(obSolid, larMat, "IB_log");
+  auto* fIBLogical  = new G4LogicalVolume(ibSolid, larMat, "IB_log");
   auto* fIBPhysical = new G4PVPlacement(nullptr, G4ThreeVector(), fIBLogical,
                                          "IB_phys", fAc2Logical, false, 0, true);
 

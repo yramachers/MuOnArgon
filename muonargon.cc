@@ -91,6 +91,5 @@ int main(int argc, char** argv)
   G4String command = "/control/execute ";
   UImanager->ApplyCommand(command + macroName);
 
-  delete &runManager;
   return 0;
 }
