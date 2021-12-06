@@ -1,0 +1,20 @@
+# minimal command set test
+# verbose
+/run/verbose 2
+/tracking/verbose 0
+
+# Enable trajectory storage
+/tracking/storeTrajectory 1
+
+# set default cut
+/run/setCut 3.0 cm
+
+# run init
+/run/initialize
+
+# lab depth [km.w.e.]
+/WLGD/generator/depth 5.89
+
+# start
+/run/beamOn 4
+
