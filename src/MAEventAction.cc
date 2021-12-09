@@ -108,6 +108,10 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
     return;  // no action on no hit
   }
 
+  // dummy storage
+  std::vector<int> thid, tz, ta;
+  std::vector<double> ttime, ted, tx, ty, tz;
+
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
 
@@ -118,16 +122,30 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
   {
     auto hh = (*CrysHC)[i];
 
-    htrid.push_back(hh->GetTID());
-    hZ.push_back(hh->GetIonZ());
-    hA.push_back(hh->GetIonA());
-    thit.push_back(hh->GetTime()  / G4Analysis::GetUnitValue("ns"));
-    edep.push_back(hh->GetEdep()  / G4Analysis::GetUnitValue("MeV"));
-    xloc.push_back((hh->GetPos()).x() / G4Analysis::GetUnitValue("m"));
-    yloc.push_back((hh->GetPos()).y() / G4Analysis::GetUnitValue("m"));
-    zloc.push_back((hh->GetPos()).z() / G4Analysis::GetUnitValue("m"));
+    thid.push_back(hh->GetTID());
+    tz.push_back(hh->GetIonZ());
+    ta.push_back(hh->GetIonA());
+    ttime.push_back(hh->GetTime()   / G4Analysis::GetUnitValue("ns"));
+    ted.push_back(hh->GetEdep()     / G4Analysis::GetUnitValue("MeV"));
+    tx.push_back((hh->GetPos()).x() / G4Analysis::GetUnitValue("m"));
+    ty.push_back((hh->GetPos()).y() / G4Analysis::GetUnitValue("m"));
+    tz.push_back((hh->GetPos()).z() / G4Analysis::GetUnitValue("m"));
   }
 
+  // fill the ntuple
+  G4int eventID = event->GetEventID();
+  for (unsigned int i=0;i<ted.size();i++)
+  {
+    analysisManager->FillNtupleIColumn(0, eventID); // repeat all rows
+    analysisManager->FillNtupleIColumn(1, thid.at(i));
+    analysisManager->FillNtupleIColumn(2, tz.at(i));
+    analysisManager->FillNtupleIColumn(2, ta.at(i));
+    analysisManager->FillNtupleDColumn(4, ted.at(i));
+    analysisManager->FillNtupleDColumn(5, ttime.at(i));
+    analysisManager->FillNtupleDColumn(6, tx.at(i));
+    analysisManager->FillNtupleDColumn(7, ty.at(i));
+    analysisManager->FillNtupleDColumn(8, tz.at(i)); // same size
+  }
 
   // fill trajectory data
 
@@ -139,10 +157,10 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
   if(n_trajectories > 0)
   {
     // temporary full storage
-    std::vector<G4int>    temptid, temppid, temppdg, tempnpts;
+    std::vector<G4int>    temptid, temppid, temppdg;
     std::vector<G4String> tempname;
     std::vector<G4double> tempxvtx, tempyvtx, tempzvtx;
-    std::vector<G4double> tempxpos, tempypos, tempzpos;
+
 
     for(G4int i = 0; i < n_trajectories; i++)
     {
@@ -154,47 +172,21 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
       tempxvtx.push_back((trj->GetVertex()).x());
       tempyvtx.push_back((trj->GetVertex()).y());
       tempzvtx.push_back((trj->GetVertex()).z());
-      tempnpts.push_back(trj->GetPointEntries());
-      for(int nn = 0; nn < trj->GetPointEntries(); ++nn)
-      {
-        tempxpos.push_back((trj->GetPoint(nn)->GetPosition()).x());
-        tempypos.push_back((trj->GetPoint(nn)->GetPosition()).y());
-        tempzpos.push_back((trj->GetPoint(nn)->GetPosition()).z());
-      }
     }
 
     // store filtered trajectories only
-    for(const int& item : htrid)
+    for(const int& item : thid)
     {
       std::vector<int> res = FilterTrajectories(item, temptid, temppid);
       for(int& idx : res)
       {
-        trjpdg.push_back(temppdg.at(idx));
-        nameid.push_back(GeomID(tempname.at(idx)));
-        trjxvtx.push_back(tempxvtx.at(idx));
-        trjyvtx.push_back(tempyvtx.at(idx));
-        trjzvtx.push_back(tempzvtx.at(idx));
-        trjnpts.push_back(tempnpts.at(idx));
-        int start = std::accumulate(tempnpts.begin(), tempnpts.begin() + idx, 0);
-        for(int i = start; i < (start + tempnpts.at(idx)); ++i)
-        {
-          trjxpos.push_back(tempxpos.at(i));
-          trjypos.push_back(tempypos.at(i));
-          trjzpos.push_back(tempzpos.at(i));
-        }
+	analysisManager->FillNtupleIColumn(9, temppdg.at(idx));
+	analysisManager->FillNtupleIColumn(10, GeomID(tempname.at(idx)));
+	analysisManager->FillNtupleDColumn(11, tempxvtx.at(idx));
+	analysisManager->FillNtupleDColumn(12, tempyvtx.at(idx));
+	analysisManager->FillNtupleDColumn(13, tempzvtx.at(idx));
       }
     }
-    temptid.clear();
-    temppid.clear();
-    temppdg.clear();
-    tempnpts.clear();
-    tempname.clear();
-    tempxvtx.clear();
-    tempyvtx.clear();
-    tempzvtx.clear();
-    tempxpos.clear();
-    tempypos.clear();
-    tempzpos.clear();
   }
   // fill the ntuple
   analysisManager->AddNtupleRow();
@@ -202,6 +194,6 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
   // printing
   G4int eventID = event->GetEventID();
   G4cout << ">>> Event: " << eventID << G4endl;
-  G4cout << "    " << edep.size() << " hits stored in this event." << G4endl;
-  G4cout << "    " << trjpdg.size() << " trajectories stored in this event." << G4endl;
+  G4cout << "    " << ted.size() << " hits stored in this event." << G4endl;
+  G4cout << "    " << temptid.size() << " trajectories stored in this event." << G4endl;
 }

@@ -86,27 +86,7 @@ private:
 
   // data members
   // hit data
-  G4int                 fHID    = -1;
-
-  std::vector<G4int>    htrid;
-  std::vector<G4int>    hZ;
-  std::vector<G4int>    hA;
-  std::vector<G4double> edep;
-  std::vector<G4double> thit;
-  std::vector<G4double> xloc;
-  std::vector<G4double> yloc;
-  std::vector<G4double> zloc;
-
-  // trajectory data
-  std::vector<G4int>        trjpdg;
-  std::vector<G4int>        trjnpts;
-  std::vector<G4int>        nameid;
-  std::vector<G4double>     trjxvtx;
-  std::vector<G4double>     trjyvtx;
-  std::vector<G4double>     trjzvtx;
-  std::vector<G4double>     trjxpos;
-  std::vector<G4double>     trjypos;
-  std::vector<G4double>     trjzpos;
+  G4int                     fHID    = -1;
   std::map<G4String, G4int> lookup;
 };
 

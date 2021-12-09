@@ -19,27 +19,25 @@ MARunAction::MARunAction(MAEventAction* eventAction, G4String name)
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetNtupleMerging(true);
 
-  // Creating ntuple with vector entries
+  // Creating ntuple with value entries
+  // since vector entries don't work anymore with 10.7
   //
   analysisManager->CreateNtuple("Score", "Hits");
-  analysisManager->CreateNtupleIColumn("HitID", fEventAction->GetHitTID());
-  analysisManager->CreateNtupleIColumn("IonZ", fEventAction->GetHitIonZ());
-  analysisManager->CreateNtupleIColumn("IonA", fEventAction->GetHitIonA());
-  analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetHitEdep());
-  analysisManager->CreateNtupleDColumn("Time", fEventAction->GetHitTime());
-  analysisManager->CreateNtupleDColumn("Hitxloc", fEventAction->GetHitxLoc());
-  analysisManager->CreateNtupleDColumn("Hityloc", fEventAction->GetHityLoc());
-  analysisManager->CreateNtupleDColumn("Hitzloc", fEventAction->GetHitzLoc());
+  analysisManager->CreateNtupleIColumn("EventID");
+  analysisManager->CreateNtupleIColumn("HitID");
+  analysisManager->CreateNtupleIColumn("IonZ");
+  analysisManager->CreateNtupleIColumn("IonA");
+  analysisManager->CreateNtupleDColumn("Edep");
+  analysisManager->CreateNtupleDColumn("Time");
+  analysisManager->CreateNtupleDColumn("Hitxloc");
+  analysisManager->CreateNtupleDColumn("Hityloc");
+  analysisManager->CreateNtupleDColumn("Hitzloc");
 
-  analysisManager->CreateNtupleIColumn("Trjpdg", fEventAction->GetTrjPDG());
-  analysisManager->CreateNtupleIColumn("Trjentries", fEventAction->GetTrjEntries());
-  analysisManager->CreateNtupleIColumn("VtxName", fEventAction->GetNameID());
-  analysisManager->CreateNtupleDColumn("TrjXVtx", fEventAction->GetTrjXVtx());
-  analysisManager->CreateNtupleDColumn("TrjYVtx", fEventAction->GetTrjYVtx());
-  analysisManager->CreateNtupleDColumn("TrjZVtx", fEventAction->GetTrjZVtx());
-  analysisManager->CreateNtupleDColumn("TrjXPos", fEventAction->GetTrjXPos());
-  analysisManager->CreateNtupleDColumn("TrjYPos", fEventAction->GetTrjYPos());
-  analysisManager->CreateNtupleDColumn("TrjZPos", fEventAction->GetTrjZPos());
+  analysisManager->CreateNtupleIColumn("Trjpdg");
+  analysisManager->CreateNtupleIColumn("VtxName");
+  analysisManager->CreateNtupleDColumn("TrjXVtx");
+  analysisManager->CreateNtupleDColumn("TrjYVtx");
+  analysisManager->CreateNtupleDColumn("TrjZVtx");
 
   analysisManager->FinishNtuple();
 }
