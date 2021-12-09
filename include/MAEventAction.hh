@@ -22,27 +22,6 @@ public:
   virtual void BeginOfEventAction(const G4Event* event);
   virtual void EndOfEventAction(const G4Event* event);
 
-  // to create columns for Ntuple
-  std::vector<G4int>&    GetHitTID()  { return htrid; }
-  std::vector<G4int>&    GetHitIonZ() { return hZ; }
-  std::vector<G4int>&    GetHitIonA() { return hA; }
-  std::vector<G4double>& GetHitEdep() { return edep; }
-  std::vector<G4double>& GetHitTime() { return thit; }
-  std::vector<G4double>& GetHitxLoc() { return xloc; }
-  std::vector<G4double>& GetHityLoc() { return yloc; }
-  std::vector<G4double>& GetHitzLoc() { return zloc; }
-
-  // tajectory methods
-  std::vector<G4int>&    GetTrjPDG() { return trjpdg; }
-  std::vector<G4int>&    GetTrjEntries() { return trjnpts; }
-  std::vector<G4int>&    GetNameID() { return nameid; }
-  std::vector<G4double>& GetTrjXVtx() { return trjxvtx; }
-  std::vector<G4double>& GetTrjYVtx() { return trjyvtx; }
-  std::vector<G4double>& GetTrjZVtx() { return trjzvtx; }
-  std::vector<G4double>& GetTrjXPos() { return trjxpos; }
-  std::vector<G4double>& GetTrjYPos() { return trjypos; }
-  std::vector<G4double>& GetTrjZPos() { return trjzpos; }
-
 private:
   // methods
   MALiquidHitsCollection*    GetHitsCollection(G4int hcID,

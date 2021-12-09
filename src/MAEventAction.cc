@@ -69,26 +69,6 @@ G4int MAEventAction::GeomID(G4String name)
 void MAEventAction::BeginOfEventAction(const G4Event*
                                          /*event*/)
 {
-  edep.clear();
-  htrid.clear();
-  thit.clear();
-  hZ.clear();
-  hA.clear();
-  edep.clear();
-  xloc.clear();
-  yloc.clear();
-  zloc.clear();
-  // clear trajectory data
-  trjpdg.clear();
-  trjnpts.clear();
-  nameid.clear();
-  trjxvtx.clear();
-  trjyvtx.clear();
-  trjzvtx.clear();
-  trjxpos.clear();
-  trjypos.clear();
-  trjzpos.clear();
-
   makeMap();
 }
 
@@ -110,7 +90,7 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
 
   // dummy storage
   std::vector<int> thid, tz, ta;
-  std::vector<double> ttime, ted, tx, ty, tz;
+  std::vector<double> ttime, ted, tx, ty, tzloc;
 
   // get analysis manager
   auto analysisManager = G4AnalysisManager::Instance();
@@ -129,7 +109,7 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
     ted.push_back(hh->GetEdep()     / G4Analysis::GetUnitValue("MeV"));
     tx.push_back((hh->GetPos()).x() / G4Analysis::GetUnitValue("m"));
     ty.push_back((hh->GetPos()).y() / G4Analysis::GetUnitValue("m"));
-    tz.push_back((hh->GetPos()).z() / G4Analysis::GetUnitValue("m"));
+    tzloc.push_back((hh->GetPos()).z() / G4Analysis::GetUnitValue("m"));
   }
 
   // fill the ntuple
@@ -144,7 +124,7 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
     analysisManager->FillNtupleDColumn(5, ttime.at(i));
     analysisManager->FillNtupleDColumn(6, tx.at(i));
     analysisManager->FillNtupleDColumn(7, ty.at(i));
-    analysisManager->FillNtupleDColumn(8, tz.at(i)); // same size
+    analysisManager->FillNtupleDColumn(8, tzloc.at(i)); // same size
   }
 
   // fill trajectory data
@@ -192,8 +172,7 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
   analysisManager->AddNtupleRow();
 
   // printing
-  G4int eventID = event->GetEventID();
   G4cout << ">>> Event: " << eventID << G4endl;
   G4cout << "    " << ted.size() << " hits stored in this event." << G4endl;
-  G4cout << "    " << temptid.size() << " trajectories stored in this event." << G4endl;
+  G4cout << "    " << n_trajectories << " trajectories stored in this event." << G4endl;
 }
