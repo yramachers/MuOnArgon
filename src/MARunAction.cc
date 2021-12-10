@@ -27,6 +27,7 @@ MARunAction::MARunAction(MAEventAction* eventAction, G4String name)
   analysisManager->CreateNtupleIColumn("HitID");
   analysisManager->CreateNtupleIColumn("IonZ");
   analysisManager->CreateNtupleIColumn("IonA");
+  analysisManager->CreateNtupleIColumn("VCode");
   analysisManager->CreateNtupleDColumn("Edep");
   analysisManager->CreateNtupleDColumn("Time");
   analysisManager->CreateNtupleDColumn("Hitxloc");

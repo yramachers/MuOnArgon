@@ -58,6 +58,7 @@ G4bool MALiquidSD::ProcessHits(G4Step* aStep,
   newHit->SetTID(aStep->GetTrack()->GetTrackID());
   newHit->SetIonZ(iZ);
   newHit->SetIonA(iA);
+  newHit->SetVName(aStep->GetTrack()->GetLogicalVolumeAtVertex()->GetName());
   newHit->SetTime(aStep->GetTrack()->GetGlobalTime());
   newHit->SetEdep(edep);
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
