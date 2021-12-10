@@ -119,7 +119,7 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
     analysisManager->FillNtupleIColumn(0, eventID); // repeat all rows
     analysisManager->FillNtupleIColumn(1, thid.at(i));
     analysisManager->FillNtupleIColumn(2, tz.at(i));
-    analysisManager->FillNtupleIColumn(2, ta.at(i));
+    analysisManager->FillNtupleIColumn(3, ta.at(i));
     analysisManager->FillNtupleDColumn(4, ted.at(i));
     analysisManager->FillNtupleDColumn(5, ttime.at(i));
     analysisManager->FillNtupleDColumn(6, tx.at(i));
