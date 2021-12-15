@@ -30,7 +30,7 @@ target_link_libraries(muonargon PRIVATE ${Geant4_LIBRARIES})
 
 # Copy macro needed to run in interactive mode to build directory.
 # By default, the macro is assumed to be in the working directory
-# where warwick-legend is run from.
+# where muonargon is run from.
 configure_file(vis.mac vis.mac COPYONLY)
 
 # Test

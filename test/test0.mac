@@ -9,8 +9,8 @@
 # run init
 /run/initialize
 
-# lab depth [km.w.e.]
-/MA/generator/depth 5.89
+# LNGS lab depth [km.w.e.]
+/MA/generator/depth 3.4
 
 # start
 /run/beamOn 4

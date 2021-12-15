@@ -20,4 +20,9 @@ $ cmake ..
 $ make
 ```
 
+## Volume Codes
 
+Sensitive detector volumes:
+- Outer Buffer volume = 7
+- Inner Buffer volume = 9
+- TPC volume = 11
