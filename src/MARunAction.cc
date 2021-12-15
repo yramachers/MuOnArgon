@@ -33,13 +33,15 @@ MARunAction::MARunAction(MAEventAction* eventAction, G4String name)
   analysisManager->CreateNtupleDColumn("Hitxloc");
   analysisManager->CreateNtupleDColumn("Hityloc");
   analysisManager->CreateNtupleDColumn("Hitzloc");
+  analysisManager->FinishNtuple();
 
+  analysisManager->CreateNtuple("Traj", "Trajectories");
+  analysisManager->CreateNtupleIColumn("EventID");
   analysisManager->CreateNtupleIColumn("Trjpdg");
   analysisManager->CreateNtupleIColumn("VtxName");
   analysisManager->CreateNtupleDColumn("TrjXVtx");
   analysisManager->CreateNtupleDColumn("TrjYVtx");
   analysisManager->CreateNtupleDColumn("TrjZVtx");
-
   analysisManager->FinishNtuple();
 }
 
