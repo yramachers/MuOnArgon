@@ -1,5 +1,4 @@
 #include "MARunAction.hh"
-#include "MAEventAction.hh"
 #include "g4root.hh"
 
 #include "G4Run.hh"
@@ -7,9 +6,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
-MARunAction::MARunAction(MAEventAction* eventAction, G4String name)
+MARunAction::MARunAction(G4String name)
 : G4UserRunAction()
-, fEventAction(eventAction)
 , fout(std::move(name))
 {
   // Create analysis manager

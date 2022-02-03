@@ -174,6 +174,15 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
         analysisManager->AddNtupleRow(1);
       }
     }
+    temptid.clear();
+    temppid.clear();
+    temppdg.clear();
+    tempname.clear();
+    tempxvtx.clear();
+    tempyvtx.clear();
+    tempzvtx.clear();
+
+    trajectoryContainer->clearAndDestroy();
   }
 
   // printing

@@ -10,6 +10,7 @@
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVReplica.hh"
+#include "G4GDMLParser.hh"
 
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
@@ -22,11 +23,13 @@
 
 MADetectorConstruction::MADetectorConstruction()
 {
+  DefineCommand();
   DefineMaterials();
 }
 
 MADetectorConstruction::~MADetectorConstruction()
 {
+  delete fDetectorMessenger;
 }
 
 auto MADetectorConstruction::Construct() -> G4VPhysicalVolume*
@@ -303,4 +306,25 @@ auto MADetectorConstruction::SetupCryostat() -> G4VPhysicalVolume*
   fCuLogical->SetVisAttributes(greenVisAtt);
 
   return fWorldPhysical;
+}
+
+void MADetectorConstruction::ExportGeometry(const G4String& file)
+{
+  G4GDMLParser parser;
+  parser.Write(file);
+}
+
+void MADetectorConstruction::DefineCommand()
+{
+  // Define geometry command directory using generic messenger class
+  fDetectorMessenger = new G4GenericMessenger(this, "/MA/detector/",
+                                              "Commands for controlling detector setup");
+  // GDML Export
+  fDetectorMessenger
+    ->DeclareMethod("exportGeometry", &MADetectorConstruction::ExportGeometry)
+    .SetGuidance("Export current geometry to a GDML file")
+    .SetParameterName("filename", false)
+    .SetDefaultValue("wlgd.gdml")
+    .SetStates(G4State_Idle)
+    .SetToBeBroadcasted(false);
 }

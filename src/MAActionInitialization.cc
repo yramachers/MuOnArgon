@@ -16,17 +16,15 @@ MAActionInitialization::~MAActionInitialization() = default;
 
 void MAActionInitialization::BuildForMaster() const
 {
-  auto event = new MAEventAction;
-  SetUserAction(new MARunAction(event, foutname));
+  SetUserAction(new MARunAction(foutname));
 }
 
 void MAActionInitialization::Build() const
 {
   // forward detector
   SetUserAction(new MAPrimaryGeneratorAction(fDet));
-  auto event = new MAEventAction;
-  SetUserAction(event);
-  SetUserAction(new MARunAction(event, foutname));
+  SetUserAction(new MAEventAction);
+  SetUserAction(new MARunAction(foutname));
   SetUserAction(new MAStackingAction);
   SetUserAction(new MATrackingAction);
 }
