@@ -166,9 +166,9 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
       for(int& idx : res)
       {
 	analysisManager->FillNtupleIColumn(1, 0, eventID); // repeat all rows
-	analysisManager->FillNtupleIColumn(1, 1, temppdg.at(idx));
-	analysisManager->FillNtupleIColumn(1, 2, temptid.at(idx));
-	analysisManager->FillNtupleIColumn(1, 3, temppid.at(idx));
+	analysisManager->FillNtupleIColumn(1, 1, temptid.at(idx));
+	analysisManager->FillNtupleIColumn(1, 2, temppid.at(idx));
+	analysisManager->FillNtupleIColumn(1, 3, temppdg.at(idx));
 	analysisManager->FillNtupleIColumn(1, 4, GeomID(tempname.at(idx)));
 	analysisManager->FillNtupleDColumn(1, 5, tempxvtx.at(idx));
 	analysisManager->FillNtupleDColumn(1, 6, tempyvtx.at(idx));
