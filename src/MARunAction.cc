@@ -35,6 +35,8 @@ MARunAction::MARunAction(G4String name)
 
   analysisManager->CreateNtuple("Traj", "Trajectories");
   analysisManager->CreateNtupleIColumn("EventID");
+  analysisManager->CreateNtupleIColumn("HitID");
+  analysisManager->CreateNtupleIColumn("ParentID");
   analysisManager->CreateNtupleIColumn("Trjpdg");
   analysisManager->CreateNtupleIColumn("VtxName");
   analysisManager->CreateNtupleDColumn("TrjXVtx");
