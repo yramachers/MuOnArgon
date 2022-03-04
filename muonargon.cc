@@ -17,6 +17,7 @@
 #include "G4NeutronTrackingCut.hh"
 #include "G4Threading.hh"
 #include "G4UImanager.hh"
+// #include "FTFP_BERT_HP.hh"
 #include "Shielding.hh"
 
 // us
@@ -71,6 +72,7 @@ int main(int argc, char** argv)
   runManager->SetUserInitialization(detector);
 
   // -- set user physics list
+  // auto* physicsList = new FTFP_BERT_HP;
   auto* physicsList = new Shielding;
   // allow for thermal neutrons to find Ge
   auto* neutronCut  = new G4NeutronTrackingCut(1);

@@ -188,8 +188,8 @@ void MAEventAction::EndOfEventAction(const G4Event* event)
   }
 
   // printing
-  G4cout << ">>> Event: " << eventID << G4endl;
-  G4cout << "    " << nofHits << " hits stored in this event." << G4endl;
-  G4cout << "    " << res.size() << " trajectories after filter." << G4endl;
+  // G4cout << ">>> Event: " << eventID << G4endl;
+  // G4cout << "    " << nofHits << " hits stored in this event." << G4endl;
+  // G4cout << "    " << res.size() << " trajectories after filter." << G4endl;
   res.clear();
 }
