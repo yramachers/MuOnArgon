@@ -47,25 +47,28 @@ G4bool MALiquidSD::ProcessHits(G4Step* aStep,
   if (edep==0.) return false;
 
   // only Ion production of interest
-  if (!aStep->GetTrack()->GetDefinition()->IsGeneralIon()) return false;
+  G4bool isGenIon = aStep->GetTrack()->GetDefinition()->IsGeneralIon();
+  G4bool isTriton = aStep->GetTrack()->GetDefinition()->GetParticleName() == "triton";
+  if (isGenIon || isTriton) {
 
-  // particle info on Ions
-  auto iZ = aStep->GetTrack()->GetDefinition()->GetAtomicNumber();
-  auto iA = aStep->GetTrack()->GetDefinition()->GetAtomicMass();
+     // particle info on Ions
+     auto iZ = aStep->GetTrack()->GetDefinition()->GetAtomicNumber();
+     auto iA = aStep->GetTrack()->GetDefinition()->GetAtomicMass();
 
-  MALiquidHit* newHit = new MALiquidHit();
+     MALiquidHit* newHit = new MALiquidHit();
 
-  newHit->SetTID(aStep->GetTrack()->GetTrackID());
-  newHit->SetIonZ(iZ);
-  newHit->SetIonA(iA);
-  newHit->SetVName(aStep->GetTrack()->GetLogicalVolumeAtVertex()->GetName());
-  newHit->SetTime(aStep->GetTrack()->GetGlobalTime());
-  newHit->SetEdep(edep);
-  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+     newHit->SetTID(aStep->GetTrack()->GetTrackID());
+     newHit->SetIonZ(iZ);
+     newHit->SetIonA(iA);
+     newHit->SetVName(aStep->GetTrack()->GetLogicalVolumeAtVertex()->GetName());
+     newHit->SetTime(aStep->GetTrack()->GetGlobalTime());
+     newHit->SetEdep(edep);
+     newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
 
-  fHitsCollection->insert( newHit );
-
-  return true;
+     fHitsCollection->insert( newHit );
+     return true;
+  }
+  return false;
 }
 
 void MALiquidSD::EndOfEvent(G4HCofThisEvent*)
